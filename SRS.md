@@ -11,17 +11,17 @@
 
 ## Table of Contents
 
-1. [Introduction](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#1-introduction)
-2. [System Overview](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#2-system-overview)
-3. [Functional Requirements](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#3-functional-requirements)
-4. [Non-Functional Requirements](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#4-non-functional-requirements)
-5. [Data Models](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#5-data-models)
-6. [System Design Notes](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#6-system-design-notes)
-7. [Deployment & Tech Stack](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#7-deployment--tech-stack)
-8. [MVP Scope & Hackathon Demo Plan](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#8-mvp-scope--hackathon-demo-plan)
-9. [Future Enhancements](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#9-future-enhancements)
-10. [Risk Register](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#10-risk-register)
-11. [Appendix: Judging Criteria Alignment](https://claude.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#appendix-judging-criteria-alignment)
+1. [Introduction](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#1-introduction)
+2. [System Overview](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#2-system-overview)
+3. [Functional Requirements](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#3-functional-requirements)
+4. [Non-Functional Requirements](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#4-non-functional-requirements)
+5. [Data Models](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#5-data-models)
+6. [System Design Notes](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#6-system-design-notes)
+7. [Deployment & Tech Stack](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#7-deployment--tech-stack)
+8. [MVP Scope & Hackathon Demo Plan](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#8-mvp-scope--hackathon-demo-plan)
+9. [Future Enhancements](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#9-future-enhancements)
+10. [Risk Register](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#10-risk-register)
+11. [Appendix: Judging Criteria Alignment](https://Gemini.ai/chat/93b1b89d-9bf2-4835-a957-f9624122ade0#appendix-judging-criteria-alignment)
 
 ---
 
@@ -112,7 +112,7 @@ ZenVen uses a three-tier architecture optimized for real-time performance and vi
 |Real-Time Engine|Socket.io (WebSocket Server)|Live location push, density events, nudges|
 |Database|Supabase (PostgreSQL)|Users, events, zones, location history|
 |Crowd Engine|Node.js spatial service|Density calculation, threshold detection|
-|Nudge Engine|Rule-based + optional Claude API|Personalized route suggestions|
+|Nudge Engine|Rule-based + optional Gemini API|Personalized route suggestions|
 |Hosting (FE)|Vercel|One-click deploy, free tier, auto-SSL|
 |Hosting (BE)|Railway or Render|Free tier supports WebSockets, Node.js|
 
@@ -231,7 +231,7 @@ Build in this sequence for maximum hackathon efficiency — each step is one foc
 |FR-6.4|System shall suggest nearest alternative POI with lower density|High|`Sort same-type POIs by density, return top 2`|
 |FR-6.5|Nudges shall be rate-limited to max 1 per fan per 3 minutes|High|`Server-side per-user nudge timestamp Map()`|
 |FR-6.6|Fan shall dismiss or act on nudge (navigate to suggestion)|Medium|`Toast with "Go There" action button`|
-|FR-6.7|System may use Claude API to generate contextual nudge text|Optional|`Anthropic API call with zone + density context — stretch goal only`|
+|FR-6.7|System may use Gemini API to generate contextual nudge text|Optional|`Gemini API call with zone + density context — stretch goal only`|
 
 ---
 
@@ -517,7 +517,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 JWT_SECRET=
 PORT=3001
 CLIENT_ORIGIN=https://your-vercel-app.vercel.app
-ANTHROPIC_API_KEY=        # optional — only for FR-6.7 AI nudges
+Gemini_API_KEY=        # optional — only for FR-6.7 AI nudges
 CROWD_PENALTY_FACTOR=50   # pathfinding tuning
 DANGER_THRESHOLD=5        # people per m²
 WARNING_THRESHOLD=4
