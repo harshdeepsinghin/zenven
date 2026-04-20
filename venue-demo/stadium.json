@@ -1,0 +1,290 @@
+{
+  "id": "demo-stadium-01",
+  "name": "ZenVen Arena",
+  "address": "Sector 21 Sports City, Mumbai",
+  "area_m2": 45000,
+  "zones": [
+    {
+      "id": "gate-a",
+      "name": "Gate A",
+      "type": "gate",
+      "polygon": [[60, 20], [140, 20], [140, 90], [60, 90]],
+      "area_m2": 78,
+      "capacity": 3200,
+      "connections": ["concourse-north", "parking-a"]
+    },
+    {
+      "id": "gate-b",
+      "name": "Gate B",
+      "type": "gate",
+      "polygon": [[380, 20], [460, 20], [460, 90], [380, 90]],
+      "area_m2": 76,
+      "capacity": 3000,
+      "connections": ["concourse-north", "parking-b"]
+    },
+    {
+      "id": "gate-c",
+      "name": "Gate C",
+      "type": "gate",
+      "polygon": [[380, 470], [460, 470], [460, 540], [380, 540]],
+      "area_m2": 80,
+      "capacity": 3200,
+      "connections": ["concourse-south", "main-exit"]
+    },
+    {
+      "id": "gate-d",
+      "name": "Gate D",
+      "type": "gate",
+      "polygon": [[60, 470], [140, 470], [140, 540], [60, 540]],
+      "area_m2": 78,
+      "capacity": 3000,
+      "connections": ["concourse-south", "main-exit"]
+    },
+    {
+      "id": "parking-a",
+      "name": "Parking A",
+      "type": "parking",
+      "polygon": [[0, 0], [200, 0], [200, 120], [0, 120]],
+      "area_m2": 420,
+      "capacity": 800,
+      "connections": ["gate-a"]
+    },
+    {
+      "id": "parking-b",
+      "name": "Parking B",
+      "type": "parking",
+      "polygon": [[320, 0], [520, 0], [520, 120], [320, 120]],
+      "area_m2": 420,
+      "capacity": 760,
+      "connections": ["gate-b"]
+    },
+    {
+      "id": "concourse-north",
+      "name": "North Concourse",
+      "type": "concourse",
+      "polygon": [[120, 110], [400, 110], [400, 180], [120, 180]],
+      "area_m2": 190,
+      "capacity": 5000,
+      "connections": ["gate-a", "gate-b", "section-11", "section-12", "toilet-north", "food-north"]
+    },
+    {
+      "id": "concourse-south",
+      "name": "South Concourse",
+      "type": "concourse",
+      "polygon": [[120, 380], [400, 380], [400, 450], [120, 450]],
+      "area_m2": 190,
+      "capacity": 5000,
+      "connections": ["gate-c", "gate-d", "section-21", "section-22", "toilet-south", "food-south", "main-exit"]
+    },
+    {
+      "id": "section-11",
+      "name": "North West Stand",
+      "type": "section",
+      "polygon": [[90, 190], [250, 190], [250, 300], [90, 300]],
+      "area_m2": 210,
+      "capacity": 5200,
+      "connections": ["concourse-north", "section-21", "toilet-west", "first-aid"]
+    },
+    {
+      "id": "section-12",
+      "name": "North East Stand",
+      "type": "section",
+      "polygon": [[270, 190], [430, 190], [430, 300], [270, 300]],
+      "area_m2": 210,
+      "capacity": 5200,
+      "connections": ["concourse-north", "section-22", "food-north", "toilet-north"]
+    },
+    {
+      "id": "section-21",
+      "name": "South West Stand",
+      "type": "section",
+      "polygon": [[90, 320], [250, 320], [250, 430], [90, 430]],
+      "area_m2": 210,
+      "capacity": 5200,
+      "connections": ["concourse-south", "section-11", "toilet-west", "main-exit"]
+    },
+    {
+      "id": "section-22",
+      "name": "South East Stand",
+      "type": "section",
+      "polygon": [[270, 320], [430, 320], [430, 430], [270, 430]],
+      "area_m2": 210,
+      "capacity": 5200,
+      "connections": ["concourse-south", "section-12", "food-south", "toilet-south"]
+    },
+    {
+      "id": "toilet-north",
+      "name": "Toilet North",
+      "type": "toilet",
+      "polygon": [[430, 130], [500, 130], [500, 200], [430, 200]],
+      "area_m2": 32,
+      "capacity": 200,
+      "connections": ["concourse-north", "section-12"]
+    },
+    {
+      "id": "toilet-south",
+      "name": "Toilet South",
+      "type": "toilet",
+      "polygon": [[430, 360], [500, 360], [500, 430], [430, 430]],
+      "area_m2": 32,
+      "capacity": 200,
+      "connections": ["concourse-south", "section-22"]
+    },
+    {
+      "id": "toilet-west",
+      "name": "Toilet West",
+      "type": "toilet",
+      "polygon": [[20, 250], [80, 250], [80, 330], [20, 330]],
+      "area_m2": 30,
+      "capacity": 180,
+      "connections": ["section-11", "section-21"]
+    },
+    {
+      "id": "food-north",
+      "name": "Food Court North",
+      "type": "food",
+      "polygon": [[200, 120], [300, 120], [300, 180], [200, 180]],
+      "area_m2": 45,
+      "capacity": 260,
+      "connections": ["concourse-north", "section-12"]
+    },
+    {
+      "id": "food-south",
+      "name": "Food Court South",
+      "type": "food",
+      "polygon": [[200, 380], [300, 380], [300, 440], [200, 440]],
+      "area_m2": 45,
+      "capacity": 260,
+      "connections": ["concourse-south", "section-22"]
+    },
+    {
+      "id": "first-aid",
+      "name": "First Aid",
+      "type": "firstaid",
+      "polygon": [[20, 170], [80, 170], [80, 240], [20, 240]],
+      "area_m2": 26,
+      "capacity": 80,
+      "connections": ["section-11", "concourse-north"]
+    },
+    {
+      "id": "main-exit",
+      "name": "Main Exit Plaza",
+      "type": "exit",
+      "polygon": [[180, 470], [340, 470], [340, 560], [180, 560]],
+      "area_m2": 160,
+      "capacity": 6000,
+      "connections": ["gate-c", "gate-d", "concourse-south", "section-21"]
+    }
+  ],
+  "graph": {
+    "edges": [
+      { "from": "parking-a", "to": "gate-a", "distance": 35 },
+      { "from": "parking-b", "to": "gate-b", "distance": 35 },
+      { "from": "gate-a", "to": "concourse-north", "distance": 45 },
+      { "from": "gate-b", "to": "concourse-north", "distance": 45 },
+      { "from": "gate-c", "to": "concourse-south", "distance": 48 },
+      { "from": "gate-d", "to": "concourse-south", "distance": 48 },
+      { "from": "gate-c", "to": "main-exit", "distance": 30 },
+      { "from": "gate-d", "to": "main-exit", "distance": 30 },
+      { "from": "concourse-north", "to": "section-11", "distance": 40 },
+      { "from": "concourse-north", "to": "section-12", "distance": 40 },
+      { "from": "concourse-north", "to": "toilet-north", "distance": 28 },
+      { "from": "concourse-north", "to": "food-north", "distance": 18 },
+      { "from": "concourse-north", "to": "first-aid", "distance": 36 },
+      { "from": "section-11", "to": "section-21", "distance": 55 },
+      { "from": "section-12", "to": "section-22", "distance": 55 },
+      { "from": "section-11", "to": "toilet-west", "distance": 24 },
+      { "from": "section-21", "to": "toilet-west", "distance": 24 },
+      { "from": "section-12", "to": "toilet-north", "distance": 24 },
+      { "from": "section-22", "to": "toilet-south", "distance": 24 },
+      { "from": "section-12", "to": "food-north", "distance": 22 },
+      { "from": "section-22", "to": "food-south", "distance": 22 },
+      { "from": "concourse-south", "to": "section-21", "distance": 40 },
+      { "from": "concourse-south", "to": "section-22", "distance": 40 },
+      { "from": "concourse-south", "to": "toilet-south", "distance": 28 },
+      { "from": "concourse-south", "to": "food-south", "distance": 18 },
+      { "from": "concourse-south", "to": "main-exit", "distance": 26 },
+      { "from": "section-21", "to": "main-exit", "distance": 32 },
+      { "from": "section-11", "to": "first-aid", "distance": 20 }
+    ]
+  },
+  "pois": [
+    {
+      "id": "poi-gate-a",
+      "name": "Gate A",
+      "type": "gate",
+      "zoneId": "gate-a",
+      "serviceRate": 220
+    },
+    {
+      "id": "poi-gate-b",
+      "name": "Gate B",
+      "type": "gate",
+      "zoneId": "gate-b",
+      "serviceRate": 220
+    },
+    {
+      "id": "poi-gate-c",
+      "name": "Gate C",
+      "type": "gate",
+      "zoneId": "gate-c",
+      "serviceRate": 220
+    },
+    {
+      "id": "poi-gate-d",
+      "name": "Gate D",
+      "type": "gate",
+      "zoneId": "gate-d",
+      "serviceRate": 220
+    },
+    {
+      "id": "toilet-north",
+      "name": "Toilets - North Stand",
+      "type": "toilet",
+      "zoneId": "toilet-north",
+      "serviceRate": 40
+    },
+    {
+      "id": "toilet-south",
+      "name": "Toilets - South Stand",
+      "type": "toilet",
+      "zoneId": "toilet-south",
+      "serviceRate": 40
+    },
+    {
+      "id": "toilet-west-poi",
+      "name": "Toilets - West Stand",
+      "type": "toilet",
+      "zoneId": "toilet-west",
+      "serviceRate": 36
+    },
+    {
+      "id": "food-north-poi",
+      "name": "Food Court North",
+      "type": "food",
+      "zoneId": "food-north",
+      "serviceRate": 60
+    },
+    {
+      "id": "food-south-poi",
+      "name": "Food Court South",
+      "type": "food",
+      "zoneId": "food-south",
+      "serviceRate": 60
+    },
+    {
+      "id": "first-aid-poi",
+      "name": "First Aid",
+      "type": "firstaid",
+      "zoneId": "first-aid",
+      "serviceRate": 15
+    },
+    {
+      "id": "main-exit-poi",
+      "name": "Main Exit Plaza",
+      "type": "exit",
+      "zoneId": "main-exit",
+      "serviceRate": 400
+    }
+  ]
+}

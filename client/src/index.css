@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --page-bg: #f3efe4;
+  --panel: rgba(255, 250, 239, 0.88);
+  --panel-strong: #fff8eb;
+  --ink: #112218;
+  --muted: #4b6651;
+  --accent: #114b36;
+  --accent-soft: #d7efdf;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --line: rgba(17, 34, 24, 0.1);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(255, 210, 119, 0.4), transparent 30%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.2), transparent 25%),
+    linear-gradient(180deg, #f8f4e8 0%, #ede5d2 100%);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(17, 34, 24, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 34, 24, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(17, 34, 24, 0.08);
+}
+
+.panel-strong {
+  border: 1px solid rgba(17, 34, 24, 0.12);
+  background: var(--panel-strong);
+  box-shadow: 0 16px 50px rgba(17, 34, 24, 0.12);
+}
+
+.danger-pulse {
+  animation: dangerPulse 1.4s ease-in-out infinite;
+}
+
+.route-dash {
+  animation: dashMove 5s linear infinite;
+}
+
+.fan-dot {
+  animation: fanPulse 1.8s ease-in-out infinite;
+}
+
+.flash-text {
+  animation: flashText 1s ease-in-out infinite;
+}
+
+@keyframes dangerPulse {
+  0%,
+  100% {
+    stroke-width: 2;
+    filter: drop-shadow(0 0 0 rgba(239, 68, 68, 0));
+  }
+  50% {
+    stroke-width: 4;
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.75));
+  }
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -180;
+  }
+}
+
+@keyframes fanPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.55;
+  }
+}
+
+@keyframes flashText {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

@@ -1,0 +1,28 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      PORT: 3001
+      CLIENT_ORIGIN: http://localhost:8080,http://localhost:5173
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret}
+      CROWD_PENALTY_FACTOR: ${CROWD_PENALTY_FACTOR:-50}
+      DANGER_THRESHOLD: ${DANGER_THRESHOLD:-5}
+      WARNING_THRESHOLD: ${WARNING_THRESHOLD:-4}
+      NUDGE_COOLDOWN_MS: ${NUDGE_COOLDOWN_MS:-180000}
+      DEFAULT_EVENT_NAME: ${DEFAULT_EVENT_NAME:-IPL Final 2026}
+      DEFAULT_EVENT_CODE: ${DEFAULT_EVENT_CODE:-424242}
+    ports:
+      - "3001:3001"
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    depends_on:
+      - server
+    ports:
+      - "8080:80"
