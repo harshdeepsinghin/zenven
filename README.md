@@ -152,3 +152,37 @@ curl -X POST http://localhost:3001/api/dev/simulate \
 - Frontend shows aggregate heatmap only, plus current user and group dots.
 - Supabase auth is optional in demo mode. Local fallback still supports join/admin flows.
 - Venue data is loaded from `venue-demo/stadium.json` and mirrored into `client/public/venue-demo.json`.
+
+## Google Services Used
+
+| Service | Usage |
+|---|---|
+| **Cloud Run** | Hosts both `zenven-server` and `zenven-client` as autoscaling managed containers |
+| **Cloud Build** | CI/CD pipelines (`cloudbuild-server.yaml` / `cloudbuild-client.yaml`) build, tag, and deploy on push |
+| **Artifact Registry / GCR** | Stores versioned Docker images (`gcr.io/$PROJECT_ID/zenven-server:latest`) |
+| **Cloud Logging** | Server emits structured JSON logs (`severity`, `message`, `timestamp`) automatically ingested by Cloud Logging when deployed to Cloud Run |
+
+Cloud Logging integration is handled in `server/src/utils/logger.js`. In production the logger writes Cloud Logging-compatible JSON to stdout; in development it falls back to plain `console.log`.
+
+## Testing
+
+```bash
+cd server
+npm test
+```
+
+Runs 4 Jest test suites covering:
+
+- `auth.test.js` — `optionalAuth` role sanitisation and `requireAdmin` access control
+- `events.test.js` — event creation validation, fan join flow, HTML injection prevention
+- `crowdEngine.test.js` — zone status threshold logic and heatmap tick emission
+- `sosHandler.test.js` — SOS trigger validation, coordinate rejection, resolve flow
+
+## Security Notes
+
+- **Helmet** sets 11+ HTTP security headers on every response
+- **Rate limiting** — 200 req/15 min general; 20 req/15 min on join endpoint
+- **Socket role guards** — `admin:gate:toggle` and `admin:announce` reject unauthenticated sockets
+- **Input sanitisation** — HTML stripped from names; capacity validated; userId truncated to 64 chars
+- **Production guard** — simulation endpoint returns 403 in `NODE_ENV=production`
+

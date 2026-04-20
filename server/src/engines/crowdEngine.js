@@ -44,9 +44,18 @@ function createCrowdEngine({ io, state, locationStore, venueData, nudgeEngine, s
     }
   }
 
+  let intervalId = null;
+
   function start() {
     tick();
-    return setInterval(tick, 2000);
+    intervalId = setInterval(tick, 2000);
+  }
+
+  function stop() {
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
   }
 
   function emitZoneStatusChanges(eventId, zones) {
@@ -76,6 +85,7 @@ function createCrowdEngine({ io, state, locationStore, venueData, nudgeEngine, s
 
   return {
     start,
+    stop,
     tick
   };
 }

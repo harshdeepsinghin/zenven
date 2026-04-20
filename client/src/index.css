@@ -113,3 +113,13 @@ h4 {
     opacity: 0.45;
   }
 }
+
+/* Respect user's motion preference — WCAG 2.3.3 */
+@media (prefers-reduced-motion: reduce) {
+  .danger-pulse,
+  .flash-text,
+  .fan-dot,
+  .route-dash {
+    animation: none;
+  }
+}

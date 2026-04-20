@@ -7,6 +7,11 @@ const { centerOfPolygon, distanceBetween } = require("../store/locationStore");
 function createNudgeEngine({ io, state, locationStore, venueData }) {
   const zoneMap = new Map(venueData.zones.map((zone) => [zone.id, zone]));
 
+  // Cache polygon centers at construction time to avoid recomputing every tick
+  const zoneCenterCache = new Map(
+    venueData.zones.map((zone) => [zone.id, centerOfPolygon(zone.polygon)])
+  );
+
   function emitToUser(userId, eventId, payload) {
     const lastSentAt = state.nudgeCooldowns.get(userId) || 0;
     if (Date.now() - lastSentAt < NUDGE_COOLDOWN_MS) {
@@ -140,7 +145,7 @@ function createNudgeEngine({ io, state, locationStore, venueData }) {
   }
 
   function findAlternatives(zone, densityMap) {
-    const zoneCenter = centerOfPolygon(zone.polygon);
+    const zoneCenter = zoneCenterCache.get(zone.id) || centerOfPolygon(zone.polygon);
     return venueData.pois
       .filter((poi) => poi.type === zone.type && poi.zoneId !== zone.id)
       .map((poi) => {

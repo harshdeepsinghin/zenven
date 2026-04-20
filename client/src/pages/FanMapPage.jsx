@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import VenueMap from "../components/map/VenueMap";
 import POISearch from "../components/navigation/POISearch";
 import RoutePanel from "../components/navigation/RoutePanel";
@@ -26,6 +26,14 @@ export default function FanMapPage() {
   const setDestination = useNavigationStore((state) => state.setDestination);
   const setRoute = useNavigationStore((state) => state.setRoute);
   const [selectedZoneId, setSelectedZoneId] = useState(currentZoneId);
+
+  const handleZoneSelect = useCallback(
+    (zone) => {
+      setSelectedZoneId(zone.id);
+      setCurrentZoneId(zone.id);
+    },
+    [setCurrentZoneId]
+  );
 
   useSocket();
   usePathfinding();
@@ -63,10 +71,7 @@ export default function FanMapPage() {
             currentPosition={currentPosition}
             groupPositions={groupPositions}
             selectedZoneId={selectedZoneId}
-            onZoneSelect={(zone) => {
-              setSelectedZoneId(zone.id);
-              setCurrentZoneId(zone.id);
-            }}
+            onZoneSelect={handleZoneSelect}
           />
 
           <div className="space-y-4">

@@ -25,6 +25,13 @@ export default function LandingPage() {
   const [adminPassword, setAdminPassword] = useState("");
   const [createdEvent, setCreatedEvent] = useState(null);
 
+  // Loading / error state for each async action
+  const [fanLoading, setFanLoading] = useState(false);
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [fanError, setFanError] = useState("");
+  const [adminError, setAdminError] = useState("");
+
   useEffect(() => {
     fetch(`${apiBaseUrl}/health`)
       .then((response) => response.json())
@@ -33,9 +40,7 @@ export default function LandingPage() {
   }, [apiBaseUrl]);
 
   useEffect(() => {
-    if (!qrEnabled) {
-      return undefined;
-    }
+    if (!qrEnabled) return undefined;
 
     const scanner = new Html5QrcodeScanner("event-code-reader", { fps: 10, qrbox: 220 }, false);
     scanner.render(
@@ -50,35 +55,38 @@ export default function LandingPage() {
     return () => scanner.clear().catch(() => {});
   }, [qrEnabled]);
 
-  const qrValue = useMemo(() => createdEvent?.event?.eventCode || demoEvent?.eventCode || "424242", [createdEvent, demoEvent]);
+  const qrValue = useMemo(
+    () => createdEvent?.event?.eventCode || demoEvent?.eventCode || "424242",
+    [createdEvent, demoEvent]
+  );
 
   const joinFanEvent = async (code = eventCode) => {
-    const response = await fetch(`${apiBaseUrl}/events/${code}/join`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: fanName || "Match Fan",
-        role: "fan"
-      })
-    });
-    const data = await response.json();
-    joinEvent({
-      ...data,
-      role: "fan",
-      user: {
-        id: data.userId,
-        name: fanName || "Match Fan"
+    setFanLoading(true);
+    setFanError("");
+    try {
+      const response = await fetch(`${apiBaseUrl}/events/${code}/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: fanName || "Match Fan", role: "fan" })
+      });
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        setFanError(err.error || "Failed to join event. Check the code and try again.");
+        return;
       }
-    });
-    updateVenueData(data.venueData);
-    navigate("/fan");
+      const data = await response.json();
+      joinEvent({ ...data, role: "fan", user: { id: data.userId, name: fanName || "Match Fan" } });
+      updateVenueData(data.venueData);
+      navigate("/fan");
+    } catch {
+      setFanError("Network error — please try again.");
+    } finally {
+      setFanLoading(false);
+    }
   };
 
   const openDemoAdmin = async () => {
-    if (!demoEvent) {
-      return;
-    }
-
+    if (!demoEvent) return;
     const response = await fetch(`${apiBaseUrl}/events/${demoEvent.id}`);
     const data = await response.json();
     joinEvent({
@@ -88,42 +96,44 @@ export default function LandingPage() {
       userToken: "dev-local-admin",
       venueData: data.venueData,
       event: data.event,
-      user: {
-        id: "local-admin",
-        name: "Venue Admin"
-      }
+      user: { id: "local-admin", name: "Venue Admin" }
     });
     updateVenueData(data.venueData);
     navigate("/admin");
   };
 
   const loginAdmin = async () => {
-    if (supabase && adminEmail && adminPassword) {
-      await supabase.auth.signInWithPassword({
-        email: adminEmail,
-        password: adminPassword
-      });
+    setAdminLoading(true);
+    setAdminError("");
+    try {
+      if (supabase && adminEmail && adminPassword) {
+        await supabase.auth.signInWithPassword({ email: adminEmail, password: adminPassword });
+      }
+      await openDemoAdmin();
+    } catch {
+      setAdminError("Could not open dashboard. Please try again.");
+    } finally {
+      setAdminLoading(false);
     }
-
-    await openDemoAdmin();
   };
 
   const createEvent = async () => {
-    const response = await fetch(`${apiBaseUrl}/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-user-id": "local-admin",
-        "x-user-role": "admin"
-      },
-      body: JSON.stringify({
-        name: "ZenVen Demo Night",
-        capacity: 12000,
-        status: "active"
-      })
-    });
-    const data = await response.json();
-    setCreatedEvent(data);
+    setCreateLoading(true);
+    try {
+      const response = await fetch(`${apiBaseUrl}/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": "local-admin",
+          "x-user-role": "admin"
+        },
+        body: JSON.stringify({ name: "ZenVen Demo Night", capacity: 12000, status: "active" })
+      });
+      const data = await response.json();
+      setCreatedEvent(data);
+    } finally {
+      setCreateLoading(false);
+    }
   };
 
   return (
@@ -141,54 +151,115 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {/* Fan join panel */}
             <div className="panel rounded-[28px] p-5">
               <h2 className="text-xl font-semibold">Join as Fan</h2>
               <div className="mt-4 space-y-3">
+                <label htmlFor="fan-name" className="sr-only">Your name</label>
                 <input
+                  id="fan-name"
                   value={fanName}
-                  onChange={(event) => setFanName(event.target.value)}
+                  onChange={(e) => setFanName(e.target.value)}
                   placeholder="Your name"
+                  autoComplete="name"
                   className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none"
                 />
+                <label htmlFor="event-code" className="sr-only">6-digit event code</label>
                 <input
+                  id="event-code"
                   value={eventCode}
-                  onChange={(event) => setEventCode(event.target.value)}
+                  onChange={(e) => setEventCode(e.target.value)}
                   placeholder="Enter 6-digit event code"
+                  inputMode="numeric"
+                  maxLength={6}
                   className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none"
                 />
+                {fanError && (
+                  <p role="alert" className="text-sm text-red-600">{fanError}</p>
+                )}
                 <div className="flex gap-3">
-                  <button type="button" onClick={() => joinFanEvent()} className="flex-1 rounded-2xl bg-[var(--accent)] px-4 py-3 font-semibold text-white">
-                    Enter Event Code
+                  <button
+                    id="btn-join-fan"
+                    type="button"
+                    onClick={() => joinFanEvent()}
+                    disabled={fanLoading}
+                    aria-busy={fanLoading}
+                    aria-label="Enter event using the code above"
+                    className="flex-1 rounded-2xl bg-[var(--accent)] px-4 py-3 font-semibold text-white disabled:opacity-60"
+                  >
+                    {fanLoading ? "Joining…" : "Enter Event Code"}
                   </button>
-                  <button type="button" onClick={() => setQrEnabled((value) => !value)} className="flex-1 rounded-2xl border border-[var(--line)] px-4 py-3 font-semibold">
-                    Scan QR
+                  <button
+                    id="btn-scan-qr"
+                    type="button"
+                    onClick={() => setQrEnabled((v) => !v)}
+                    aria-pressed={qrEnabled}
+                    aria-label={qrEnabled ? "Close QR scanner" : "Open QR scanner to read event code"}
+                    className="flex-1 rounded-2xl border border-[var(--line)] px-4 py-3 font-semibold"
+                  >
+                    {qrEnabled ? "Close Scanner" : "Scan QR"}
                   </button>
                 </div>
-                {qrEnabled ? <div id="event-code-reader" className="overflow-hidden rounded-3xl bg-white p-3" /> : null}
+                {qrEnabled && (
+                  <div
+                    id="event-code-reader"
+                    role="region"
+                    aria-label="QR code scanner"
+                    aria-live="polite"
+                    className="overflow-hidden rounded-3xl bg-white p-3"
+                  />
+                )}
               </div>
             </div>
 
+            {/* Admin panel */}
             <div className="panel rounded-[28px] p-5">
               <h2 className="text-xl font-semibold">Admin Launch</h2>
               <div className="mt-4 space-y-3">
+                <label htmlFor="admin-email" className="sr-only">Admin email</label>
                 <input
+                  id="admin-email"
+                  type="email"
                   value={adminEmail}
-                  onChange={(event) => setAdminEmail(event.target.value)}
+                  onChange={(e) => setAdminEmail(e.target.value)}
                   placeholder="Admin email"
+                  autoComplete="email"
                   className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none"
                 />
+                <label htmlFor="admin-password" className="sr-only">Admin password</label>
                 <input
+                  id="admin-password"
                   type="password"
                   value={adminPassword}
-                  onChange={(event) => setAdminPassword(event.target.value)}
+                  onChange={(e) => setAdminPassword(e.target.value)}
                   placeholder="Admin password"
+                  autoComplete="current-password"
                   className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none"
                 />
-                <button type="button" onClick={loginAdmin} className="w-full rounded-2xl bg-[#111827] px-4 py-3 font-semibold text-white">
-                  Open Admin Dashboard
+                {adminError && (
+                  <p role="alert" className="text-sm text-red-600">{adminError}</p>
+                )}
+                <button
+                  id="btn-open-admin"
+                  type="button"
+                  onClick={loginAdmin}
+                  disabled={adminLoading}
+                  aria-busy={adminLoading}
+                  aria-label="Open admin dashboard"
+                  className="w-full rounded-2xl bg-[#111827] px-4 py-3 font-semibold text-white disabled:opacity-60"
+                >
+                  {adminLoading ? "Opening…" : "Open Admin Dashboard"}
                 </button>
-                <button type="button" onClick={createEvent} className="w-full rounded-2xl border border-[var(--line)] px-4 py-3 font-semibold">
-                  Create Event and QR
+                <button
+                  id="btn-create-event"
+                  type="button"
+                  onClick={createEvent}
+                  disabled={createLoading}
+                  aria-busy={createLoading}
+                  aria-label="Create a new demo event and generate QR code"
+                  className="w-full rounded-2xl border border-[var(--line)] px-4 py-3 font-semibold disabled:opacity-60"
+                >
+                  {createLoading ? "Creating…" : "Create Event and QR"}
                 </button>
               </div>
             </div>
@@ -198,11 +269,15 @@ export default function LandingPage() {
         <aside className="grid gap-6">
           <div className="panel rounded-[30px] p-6">
             <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Live Demo</div>
-            <div className="mt-3 text-2xl font-semibold">{createdEvent?.event?.name || demoEvent?.name || "ZenVen Demo Event"}</div>
+            <div className="mt-3 text-2xl font-semibold">
+              {createdEvent?.event?.name || demoEvent?.name || "ZenVen Demo Event"}
+            </div>
             <div className="mt-2 text-sm text-[var(--muted)]">Default event code</div>
-            <div className="mt-2 text-4xl font-semibold tracking-[0.28em]">{qrValue}</div>
+            <div className="mt-2 text-4xl font-semibold tracking-[0.28em]" aria-label={`Event code: ${qrValue}`}>
+              {qrValue}
+            </div>
             <div className="mt-6 rounded-[28px] bg-white p-5">
-              <QRCodeSVG value={qrValue} size={220} className="mx-auto" />
+              <QRCodeSVG value={qrValue} size={220} className="mx-auto" aria-label={`QR code for event ${qrValue}`} />
             </div>
           </div>
 

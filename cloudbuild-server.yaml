@@ -1,5 +1,28 @@
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/zenven-server', '-f', 'server/Dockerfile', '.']
+  # Pull existing image for layer cache
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'docker pull gcr.io/$PROJECT_ID/zenven-server:latest || true'
+
+  # Build server image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--cache-from'
+      - 'gcr.io/$PROJECT_ID/zenven-server:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/zenven-server:$BUILD_ID'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/zenven-server:latest'
+      - '-f'
+      - 'server/Dockerfile'
+      - '.'
+
 images:
-- 'gcr.io/$PROJECT_ID/zenven-server'
+  - 'gcr.io/$PROJECT_ID/zenven-server:$BUILD_ID'
+  - 'gcr.io/$PROJECT_ID/zenven-server:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

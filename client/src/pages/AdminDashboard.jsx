@@ -33,7 +33,15 @@ export default function AdminDashboard() {
   }, [apiBaseUrl, eventId]);
 
   if (window.innerWidth < 1024) {
-    return <div className="app-shell flex min-h-screen items-center justify-center px-6 text-center">Admin dashboard needs desktop width.</div>;
+    return (
+      <div
+        role="alert"
+        aria-live="assertive"
+        className="app-shell flex min-h-screen items-center justify-center px-6 text-center"
+      >
+        Admin dashboard requires a desktop screen (1024px+).
+      </div>
+    );
   }
 
   const gates = venueData?.zones?.filter((zone) => zone.type === "gate") || [];
@@ -62,6 +70,7 @@ export default function AdminDashboard() {
                   <button
                     key={scenario}
                     type="button"
+                    aria-label={`Run simulation: ${scenario.replace(/_/g, " ")}`}
                     onClick={() =>
                       fetch(`${apiBaseUrl}/api/dev/simulate`, {
                         method: "POST",
@@ -71,7 +80,7 @@ export default function AdminDashboard() {
                     }
                     className="rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-left text-sm font-semibold"
                   >
-                    {scenario}
+                    {scenario.replace(/_/g, " ")}
                   </button>
                 ))}
               </div>
